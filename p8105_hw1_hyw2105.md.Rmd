@@ -10,5 +10,22 @@ library(tidyverse)
 ```
 
 # Problem 1
+```{r load_penguins}
+data("penguins", package = "palmerpenguins")
+```
+The `penguins` dataset contains measurements of penguins observed in the
+Palmer Archipelago, Antarctica. It has `r nrow(penguins)` observations and
+`r ncol(penguins)` variables.
+
+The dataset includes penguins from three species
+(`r paste(levels(pull(penguins, species)), collapse = ", ")`) living on
+three islands (`r paste(levels(pull(penguins, island)), collapse = ", ")`).
+Important variables include bill length (`bill_length_mm`), bill depth
+(`bill_depth_mm`), flipper length (`flipper_length_mm`), body mass
+(`body_mass_g`), `sex`, and `year`. Observations were collected from
+`r min(pull(penguins, year))` to `r max(pull(penguins, year))`.
+
+The mean flipper length is
+`r round(mean(pull(penguins, flipper_length_mm), na.rm = TRUE), 2)` mm.
 
 # Problem 2
