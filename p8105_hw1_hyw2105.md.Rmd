@@ -1,0 +1,14 @@
+---
+title: "Homework 1"
+author: "Irene Wen"
+date: "2026-09-18"
+output: github_document
+---
+
+```{r load_libraries, message = FALSE}
+library(tidyverse)
+```
+
+# Problem 1
+
+# Problem 2
