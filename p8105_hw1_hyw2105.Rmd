@@ -12,21 +12,25 @@ library(tidyverse)
 # Problem 1
 ```{r load_penguins}
 data("penguins", package = "palmerpenguins")
+levels(pull(penguins, species))
+levels(pull(penguins, island))
+
 ```
-The `penguins` dataset contains measurements of penguins observed in the
-Palmer Archipelago, Antarctica. It has `r nrow(penguins)` observations and
-`r ncol(penguins)` variables.
+The `penguins` dataset includes the species, island, bill length, bill depth,
+flipper length, body mass, sex, and year for each penguin. There are three
+species ("Adelie"    "Chinstrap" "Gentoo" ) and three islands
+("Biscoe"    "Dream"     "Torgersen").
 
-The dataset includes penguins from three species
-(`r paste(levels(pull(penguins, species)), collapse = ", ")`) living on
-three islands (`r paste(levels(pull(penguins, island)), collapse = ", ")`).
-Important variables include bill length (`bill_length_mm`), bill depth
-(`bill_depth_mm`), flipper length (`flipper_length_mm`), body mass
-(`body_mass_g`), `sex`, and `year`. Observations were collected from
-`r min(pull(penguins, year))` to `r max(pull(penguins, year))`.
+```{r}
+nrow(penguins)
+ncol(penguins)
+penguins |> pull(flipper_length_mm) |> mean(na.rm = TRUE) |> round(2)
+```
+The dataset has 344 rows and 8 columns, so
+there are 344 penguins and 8 variables.
 
-The mean flipper length is
-`r round(mean(pull(penguins, flipper_length_mm), na.rm = TRUE), 2)` mm.
+The mean flipper length is 200.92 mm.
+
 
 ```{r penguins_scatterplot}
 penguins_scatterplot =
@@ -50,7 +54,6 @@ ggsave(
 )
 ```
 
-The scatterplot shows a generally positive relationship between bill length and flipper length, although the three penguin species form distinct clusters. Adelie penguins tend to have shorter bills and flippers, Gentoo penguins generally have the longest flippers, and Chinstrap penguins tend to have relatively long bills but intermediate flipper lengths. The warning indicates that observations with missing values in bill_length_mm or flipper_length_mm were removed from the plot.
 
 # Problem 2
 ```{r create_problem2_df}
@@ -76,42 +79,24 @@ mean(pull(problem2_df, norm_samp_pos))
 mean(pull(problem2_df, vec_char))
 mean(pull(problem2_df, vec_factor))
 ```
-Taking the mean works for the numeric and logical variables but not for the
-character and factor variables. The mean of `norm_samp` is
-`r round(mean(pull(problem2_df, norm_samp)), 2)`, which is close to 0, as
-expected for a sample from a standard Normal distribution. The mean of
-`norm_samp_pos` is `r mean(pull(problem2_df, norm_samp_pos))`; because R
-treats `TRUE` as 1 and `FALSE` as 0, this is the proportion of sampled
-values that are greater than 0.
-
-For `vec_char` and `vec_factor`, `mean()` returns `NA` with a warning that
-the argument is not numeric or logical. Character values have no numeric
-meaning, and a factor represents categories rather than quantities, so an
-arithmetic mean is not defined for either.
+Taking the mean works for the numeric and logical variables. For the logical
+variable, the mean is the proportion of `TRUE` values. It doesn't work for the
+character and factor variables, which return `NA` with a warning that the
+argument is not numeric or logical.
 
 
-```{r coerce_to_numeric, results = "hide", warning = FALSE}
+```{r, eval = FALSE}
 as.numeric(pull(problem2_df, norm_samp_pos))
 as.numeric(pull(problem2_df, vec_char))
 as.numeric(pull(problem2_df, vec_factor))
 ```
+The logical variable becomes 1 for `TRUE` and 0 for `FALSE`. The character
+variable becomes all `NA`, because letters can't be converted to numbers. The
+factor variable becomes the numbers 1, 2, and 3, which are the codes R uses for
+its levels (high, low, medium in alphabetical order).
 
-Applying `as.numeric()` converts the logical variable to 1 for `TRUE` and 0
-for `FALSE`. The sample contains
-`r sum(pull(problem2_df, norm_samp_pos))` ones out of
-`r nrow(problem2_df)` values, which matches the mean of `norm_samp_pos`
-computed above. This explains why taking the mean of a logical variable
-works: it gives the proportion of `TRUE` values.
-
-The character variable cannot be converted, so every value becomes `NA`
-(with a warning that NAs were introduced by coercion). This is consistent
-with `mean()` returning `NA` for the character variable, since there are no
-numeric values to average.
-
-The factor variable is converted to integer codes. R stores factor levels in
-alphabetical order (`r paste(levels(pull(problem2_df, vec_factor)), collapse = ", ")`),
-so "high" becomes 1, "low" becomes 2, and "medium" becomes 3. These codes
-are only labels used internally and do not even follow the natural ordering
-of low < medium < high. `mean()` does not convert factors automatically,
-which is why it returned `NA`, and even after explicit conversion, averaging
-these codes would not produce a meaningful quantity.
+This helps explain the means. The logical variable works because it is stored
+as 0s and 1s. The character variable has no numeric values, so there is nothing
+to average. The factor does have numeric codes underneath, but `mean()` doesn't
+convert factors, and the codes only label categories, so their mean wouldn't
+mean anything.
