@@ -28,7 +28,6 @@ penguins |> pull(flipper_length_mm) |> mean(na.rm = TRUE) |> round(2)
 ```
 The dataset has 344 rows and 8 columns, so
 there are 344 penguins and 8 variables.
-
 The mean flipper length is 200.92 mm.
 
 
