@@ -70,6 +70,7 @@ problem2_df =
 
 problem2_df
 ```
+Claude Ai was used to help troubleshooting with the codes in this chunk.
 
 ```{r take_means}
 mean(pull(problem2_df, norm_samp))
